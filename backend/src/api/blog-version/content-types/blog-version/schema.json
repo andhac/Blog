@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "blog_versions",
+  "info": {
+    "singularName": "blog-version",
+    "pluralName": "blog-versions",
+    "displayName": "BlogVersion"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "blog": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::blog.blog",
+      "inversedBy": "blog_versions"
+    },
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "text"
+    }
+  }
+}
