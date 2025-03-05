@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useForm } from "react-hook-form";
 import { Box, Button, TextField, Typography, Card } from "@mui/material";
 import { motion } from "framer-motion";
@@ -8,7 +8,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import {useMeQuery, usePostBlogMutation} from "@/services/api";
-import {redirect} from "next/navigation";
+import {useAppSelector} from "@/store/store";
+import {useRouter} from "next/navigation";
 
 // ✅ Validation Schema
 const schema = yup.object().shape({
@@ -17,6 +18,15 @@ const schema = yup.object().shape({
 });
 
 const CreateBlogs = () => {
+    const router = useRouter();
+
+    const {isAuthenticated} = useAppSelector((state) => state.auth)
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/login");
+        }
+    },[isAuthenticated])
     const {data} = useMeQuery()
     const [postBlog] = usePostBlogMutation()
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
@@ -31,21 +41,22 @@ const CreateBlogs = () => {
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const title = e.target.value;
         setValue("title", title);
-        setSlug(title.toLowerCase().replace(/\s+/g, "-"));
+        setSlug(title
+            .toLowerCase()
+            .replace(/\s+/g, "-") + "-" + Math.random().toString(36).substring(7));
     };
 
 
     const onSubmit =  async (data: any) => {
         try{
             const blogData = {
-            data:{...
-                data, author
-            }
+            data:{...data, author, slug}
         };
+
             // @ts-ignore
             await postBlog(blogData).unwrap()
             toast.success("Blog created successfully")
-            redirect('/')
+            router.push('/')
         }catch (err:any){
             const error = err.data.message[0].messages[0].message
             toast.error(error)

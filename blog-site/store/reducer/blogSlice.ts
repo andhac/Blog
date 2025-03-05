@@ -79,8 +79,16 @@ export const blogSlice = createSlice({
                 state.loading = false;
                 state.error = action.error?.message ?? "Failed to post the blog";
             })
+
+            //Create Comments
             .addMatcher(api.endpoints.createComment.matchFulfilled, (state,action) => {
                 state.comments.push(action.payload.data);
+                state.loading = false;
+                state.error = null;
+            })
+        //Get Comments
+            .addMatcher(api.endpoints.getComment.matchFulfilled, (state, action) => {
+                state.comments = action.payload.data;
                 state.loading = false;
                 state.error = null;
             })
@@ -88,5 +96,4 @@ export const blogSlice = createSlice({
     }
 })
 
-export const {setLoading, setError, resetBlogs} = blogSlice.actions;
 export default blogSlice.reducer

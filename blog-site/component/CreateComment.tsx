@@ -8,7 +8,6 @@ import { useCreateCommentMutation } from "@/services/api";
 import { useAppSelector } from "@/store/store";
 
 interface CreateCommentProps {
-    onAddComment: (comment: string) => void;
     documentId: string; // Blog ID
 }
 
@@ -22,7 +21,7 @@ const schema = yup.object().shape({
         .required("Comment is required"),
 });
 
-const CreateComment: React.FC<CreateCommentProps> = ({ onAddComment, documentId }) => {
+const CreateComment: React.FC<CreateCommentProps> = ({ documentId }) => {
     const [createComment] = useCreateCommentMutation();
 
 
@@ -41,16 +40,15 @@ const CreateComment: React.FC<CreateCommentProps> = ({ onAddComment, documentId 
                 data: {
                     blog: documentId,
                     comment: data.comment,
-                    users_permissions_user: null,
                     commentStatus: "pending"
                 }
             };
 
             console.log("Submitting Comment:", payload);
 
-            await createComment(payload); // Sending to backend
+            // @ts-ignore
+            await createComment(payload);
 
-            onAddComment(data.comment);
             reset(); // Reset input field
         } catch (error) {
             console.error("Failed to submit comment", error);

@@ -3,7 +3,8 @@ import { Avatar, Box } from "@mui/material";
 import { Menu, Transition } from "@headlessui/react";
 import { LogOut } from "lucide-react";
 import {useMeQuery} from "@/services/api";
-
+import {ImProfile} from "react-icons/im";
+import {redirect} from "next/navigation";
 
 interface userName{
     username: string
@@ -36,6 +37,19 @@ const Authenticated = () => {
                 >
                     <Menu.Items className="absolute right-0 w-36 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="px-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`${
+                                            active ? "bg-gray-100 text-gray-900" : "text-gray-700"
+                                        } group flex rounded-md items-center w-full px-2 py-1 text-sm`}
+                                        onClick={() =>redirect('/profile')}
+                                    >
+                                        <ImProfile className='size-5 mr-2 mb-1'/>
+                                        Profile
+                                    </button>
+                                )}
+                            </Menu.Item>
                             <Menu.Item>
                                 {({ active }) => (
                                     <button
